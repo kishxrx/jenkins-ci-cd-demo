@@ -16,14 +16,14 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 echo 'Installing Node.js packages...'
-                sh 'npm install'
+                bat 'npm install'
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 echo 'Building Docker image...'
-                sh "docker build -t $IMAGE_NAME ."
+                bat "docker build -t $IMAGE_NAME ."
             }
         }
 
@@ -35,7 +35,7 @@ pipeline {
                     usernameVariable: 'DOCKER_USERNAME',
                     passwordVariable: 'DOCKER_PASSWORD'
                 )]) {
-                    sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
+                    bat 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
                 }
             }
         }
@@ -43,7 +43,7 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 echo 'Pushing image to DockerHub...'
-                sh "docker push $IMAGE_NAME"
+                bat "docker push $IMAGE_NAME"
             }
         }
     }
