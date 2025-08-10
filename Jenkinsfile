@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    triggers {
+        githubPush()
+    }
+
     environment {
         IMAGE_NAME = 'kishxrx/jenkins-ci-cd-demo'
     }
@@ -9,7 +13,10 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo 'Cloning repository...'
-                checkout scm
+                git(
+                    url: 'https://github.com/kishxrx/jenkins-ci-cd-demo.git',
+                    credentialsId: 'github-token'
+                )
             }
         }
 
