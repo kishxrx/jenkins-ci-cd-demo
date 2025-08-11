@@ -1,21 +1,23 @@
-// corrected Jenkinsfile
 pipeline {
-    agent {
-        docker { image 'node:20-alpine' }
-    }
+    agent any
 
     triggers {
         githubPush()
     }
 
     environment {
-        IMAGE_NAME = 'kishxrx/jenkins-ci-cd-demo'
+        IMAGE_NAME = '****/jenkins-ci-cd-demo'
     }
 
     stages {
-        stage('Install Dependencies and Clean Workspace') {
+        stage('Clean Workspace') {
             steps {
                 cleanWs()
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
                 echo 'Installing Node.js packages...'
                 sh 'npm install'
             }
