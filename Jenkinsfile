@@ -14,17 +14,11 @@ pipeline {
     }
 
     stages {
-        stage('Clean Workspace') {
-            steps {
-                cleanWs()
-            }
-        }
-
         stage('Checkout Code') {
             steps {
                 git branch: 'main',
-                    credentialsId: 'github-creds',
-                    url: 'https://github.com/kingg121/jenkins-ci-cd-demo.git'
+                    url: 'https://github.com/kingg121/jenkins-ci-cd-demo.git',
+                    credentialsId: 'github-token'
             }
         }
 
@@ -32,6 +26,12 @@ pipeline {
             steps {
                 sh 'pwd'
                 sh 'ls -la'
+            }
+        }
+
+        stage('Clean Workspace') {
+            steps {
+                cleanWs()
             }
         }
 
