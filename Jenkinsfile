@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    options {
-        skipDefaultCheckout(true) // Prevents Jenkins from cloning repo automatically
-    }
-
     tools {
         nodejs 'node22'
     }
@@ -27,8 +23,8 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 git branch: 'main',
-                    url: 'https://github.com/kingg123/jenkins-ci-cd-demo',
-                    credentialsId: 'github-token'
+                    credentialsId: 'github-creds',
+                    url: 'https://github.com/kingg121/jenkins-ci-cd-demo.git'
             }
         }
 
