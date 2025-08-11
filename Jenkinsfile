@@ -1,12 +1,16 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs 'node22'
+    }
+
     triggers {
         githubPush()
     }
 
     environment {
-        IMAGE_NAME = '****/jenkins-ci-cd-demo'
+        IMAGE_NAME = 'kishxrx/jenkins-ci-cd-demo'
     }
 
     stages {
