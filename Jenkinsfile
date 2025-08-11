@@ -1,4 +1,4 @@
-// CORRECTED Jenkinsfile for Linux environment (GitHub Codespaces)
+// The complete, corrected Jenkinsfile for a Linux environment
 pipeline {
     agent any
 
@@ -11,20 +11,12 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                echo 'Cloning repository...'
-                git(
-                    url: 'https://github.com/kishxrx/jenkins-ci-cd-demo.git',
-                    credentialsId: 'github-token'
-                )
-            }
-        }
-
+        // The 'Checkout' stage has been removed. 
+        // Jenkins automatically checks out the code before the pipeline starts.
+        
         stage('Install Dependencies') {
             steps {
                 echo 'Installing Node.js packages...'
-                // Use 'sh' for Linux
                 sh 'npm install'
             }
         }
@@ -32,7 +24,6 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 echo 'Building Docker image...'
-                // Use 'sh' and Linux variable syntax `${...}`
                 sh "docker build -t ${IMAGE_NAME} ."
             }
         }
@@ -45,8 +36,6 @@ pipeline {
                     usernameVariable: 'DOCKER_USERNAME',
                     passwordVariable: 'DOCKER_PASSWORD'
                 )]) {
-                    // Use 'sh' and Linux variable syntax `${...}`
-                    // Double quotes are needed for the variables to be expanded.
                     sh "echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin"
                 }
             }
@@ -55,7 +44,6 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 echo 'Pushing image to DockerHub...'
-                // Use 'sh' and Linux variable syntax `${...}`
                 sh "docker push ${IMAGE_NAME}"
             }
         }
