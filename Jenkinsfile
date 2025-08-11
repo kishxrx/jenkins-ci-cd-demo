@@ -20,6 +20,13 @@ pipeline {
             }
         }
 
+        stage('Debug Workspace') {
+            steps {
+                sh 'pwd'
+                sh 'ls -la'
+            }
+        }
+
         stage('Install Dependencies') {
             steps {
                 echo 'Installing Node.js packages...'
