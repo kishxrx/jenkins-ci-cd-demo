@@ -1,6 +1,6 @@
-// Jenkinsfile using a Docker Agent for the build environment
+// The complete, final, and corrected Jenkinsfile
 pipeline {
-    // this Tells Jenkins to run the stages inside a Docker container
+    // Tells Jenkins to run the stages inside a Docker container
     // that already has Node.js and npm installed.
     agent {
         docker { image 'node:20-alpine' }
@@ -15,10 +15,12 @@ pipeline {
     }
 
     stages {
-        // 'No Checkout' stage*
-
-        stage('Install Dependencies') {
+        
+        stage('Install Dependencies and Clean Workspace') {
             steps {
+                // This is a DevOps best practice to prevent stale file issues.
+                cleanWs() 
+                
                 echo 'Installing Node.js packages...'
                 sh 'npm install'
             }
@@ -33,6 +35,7 @@ pipeline {
 
         stage('Login to DockerHub') {
             steps {
+                echo 'Logging into DockerHub...'
                 withCredentials([usernamePassword(
                     credentialsId: 'dockerhub-creds',
                     usernameVariable: 'DOCKER_USERNAME',
@@ -45,7 +48,7 @@ pipeline {
 
         stage('Push Docker Image') {
             steps {
-
+                echo 'Pushing image to DockerHub...'
                 sh "docker push ${IMAGE_NAME}"
             }
         }
