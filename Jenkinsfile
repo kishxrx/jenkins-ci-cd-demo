@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    options {
+        skipDefaultCheckout(true) // Prevents Jenkins from cloning repo automatically
+    }
+
     tools {
         nodejs 'node22'
     }
@@ -17,6 +21,14 @@ pipeline {
         stage('Clean Workspace') {
             steps {
                 cleanWs()
+            }
+        }
+
+        stage('Checkout Code') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/kingg123/jenkins-ci-cd-demo',
+                    credentialsId: 'github-token'
             }
         }
 
