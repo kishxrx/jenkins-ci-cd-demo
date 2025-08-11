@@ -14,6 +14,12 @@ pipeline {
     }
 
     stages {
+        stage('Clean Workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+
         stage('Checkout Code') {
             steps {
                 git branch: 'main',
@@ -26,12 +32,6 @@ pipeline {
             steps {
                 sh 'pwd'
                 sh 'ls -la'
-            }
-        }
-
-        stage('Clean Workspace') {
-            steps {
-                cleanWs()
             }
         }
 
