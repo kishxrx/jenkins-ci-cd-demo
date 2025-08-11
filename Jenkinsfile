@@ -1,3 +1,4 @@
+// CORRECTED Jenkinsfile for Linux environment (GitHub Codespaces)
 pipeline {
     agent any
 
@@ -23,14 +24,16 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 echo 'Installing Node.js packages...'
-                bat 'npm install'
+                // Use 'sh' for Linux
+                sh 'npm install'
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 echo 'Building Docker image...'
-                bat "docker build -t %IMAGE_NAME% ."
+                // Use 'sh' and Linux variable syntax `${...}`
+                sh "docker build -t ${IMAGE_NAME} ."
             }
         }
 
@@ -42,7 +45,9 @@ pipeline {
                     usernameVariable: 'DOCKER_USERNAME',
                     passwordVariable: 'DOCKER_PASSWORD'
                 )]) {
-                    bat 'echo %DOCKER_PASSWORD% | docker login -u %DOCKER_USERNAME% --password-stdin'
+                    // Use 'sh' and Linux variable syntax `${...}`
+                    // Double quotes are needed for the variables to be expanded.
+                    sh "echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin"
                 }
             }
         }
@@ -50,7 +55,8 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 echo 'Pushing image to DockerHub...'
-                bat "docker push %IMAGE_NAME%"
+                // Use 'sh' and Linux variable syntax `${...}`
+                sh "docker push ${IMAGE_NAME}"
             }
         }
     }
