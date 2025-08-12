@@ -68,5 +68,5 @@ The journey so far has been a testament to the reality of DevOps work: it is oft
 *(This README will be updated with Part 2, which will cover the debugging and successful execution of the Jenkins pipeline itself.)*
 
 ## Live Deployment
-Click the badge above to see the final product of the CI/CD pipeline in action.
+Click the badge below to see the final product of the CI/CD pipeline in action.
 [https://my-jenkins-ci-cd-demo.onrender.com/]
