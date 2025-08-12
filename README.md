@@ -113,5 +113,3 @@ This README will be updated with Part 2, covering the debugging and successful e
 
 ---
 
-If you want, I can also help you prepare Part 2 when you're ready!
-
