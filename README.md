@@ -1,4 +1,4 @@
-# DevOps Internship - Task 2: A Deep Dive into Building a Jenkins CI/CD Pipeline
+# Building a Robust Jenkins CI/CD Pipeline for a Containerized Node.js Application
 
 This document chronicles the journey of setting up a simple CI/CD pipeline for a Node.js application using Jenkins and Docker. The initial task, as outlined by the internship, was straightforward. However, the path to a successful build was fraught with a wide array of real-world technical challenges, from local environment failures to complex cloud configurations.
 
