@@ -43,7 +43,7 @@ With the local machine being a dead end, the strategy shifted to using a cloud-b
 
 This pivot was immediately successful. A new codespace was created, and within minutes, we had a stable Linux environment with a working Docker installation. The problems that had blocked progress for days were solved in under five minutes.
 
-### The New Challenge: Docker-in-Docker
+### The New Challenge:
 
 The relief was short-lived, as a new, more complex set of challenges emerged. The goal was to run Jenkins inside a Docker container, which would then be used to build other Docker containers—a classic "Docker-in-Docker" scenario.
 
@@ -58,6 +58,26 @@ The root cause was that the Jenkins container, for security reasons, is isolated
 - `-v /var/run/docker.sock:/var/run/docker.sock`: This command "bind-mounts" the host's Docker control socket into the Jenkins container, effectively giving it a direct phone line to the Docker engine.
 
 This step required stopping and removing the old container and starting a new one with the correct command, a process that was repeated multiple times due to persistent and baffling failures.
+
+* **Challenge: Missing Build Tools & Incorrect Environment**
+    * **Cause:** Builds initially failed because the Jenkins container didn’t have the required Node.js version. The pipeline was also using Windows-specific commands (`bat`) in a Linux environment.
+    * **Solution:** The pipeline was upgraded to use a modern Docker Agent (`agent { docker { image 'node:20-alpine' } }`), ensuring a clean, reproducible build environment with the correct Node.js version pre-installed. The `Jenkinsfile` was also corrected to use Linux shell commands (`sh`). This required installing the **Docker Pipeline** plugin.
+
+* **Challenge: Workspace & File Path Issues**
+    * **Cause:** Early builds failed because the `npm install` step couldn’t find the `package.json` file. Later, after numerous container restarts, the workspace became corrupted, causing `fatal: not in a git directory` errors.
+    * **Solution:** A debug stage using `sh 'pwd'` and `sh 'ls -la'` was temporarily added to verify the directory structure. The permanent solution was to add a `cleanWs()` step to the beginning of the pipeline, ensuring a pristine workspace for every build.
+
+* **Challenge: Authentication & Permissions**
+    * **Cause:** The pipeline failed to push to Docker Hub due to `unauthorized` errors. The GitHub webhook also failed with a `401` error.
+    * **Solution:** Jenkins credentials were created for both **Docker Hub** and **GitHub** using secure Access Tokens. For the webhook, the Jenkins port visibility in GitHub Codespaces was changed from 'Private' to 'Public' to allow GitHub's servers to send trigger events.
+
+* **Challenge: Incorrect Image Tagging**
+    * **Cause:** The `docker push` command failed because the image name did not follow the required `<username>/<repository>` format for Docker Hub.
+    * **Solution:** An `environment` block was added to the `Jenkinsfile` to define a correctly formatted `IMAGE_NAME` variable, which was then used consistently in both the `docker build` and `docker push` steps.
+
+### Phase 3: Final Deployment
+
+After successfully troubleshooting the pipeline, the final stage was to make the built application accessible. The completed pipeline pushes the final application image to **Docker Hub**. This image was then deployed as a **Web Service** using the free tier on the **Render** platform, providing a stable, public URL.
 
 ## A Note on Persistence
 
