@@ -51,24 +51,24 @@ The relief was short-lived, as a new, more complex set of challenges emerged. Th
 - **Plugin Configuration:** The Docker Pipeline plugin was correctly identified as a necessary component to allow Jenkins to understand `agent { docker { ... } }` syntax in the Jenkinsfile.  
 - **The `docker: not found` Error:** The pipeline repeatedly failed, with the Jenkins container reporting that the `docker` command itself did not exist. This was the central challenge of this phase.  
 
-- **Challenge: The Docker-in-Docker Problem (docker: not found)
-- **Cause: The first hurdle was that the Jenkins container itself was isolated from the main Docker engine on the Codespace host. It had no permission to issue docker commands.
-- **Solution: The Jenkins container was re-created with a bind-mount to the host's Docker socket (-v /var/run/docker.sock:/var/run/docker.sock) and elevated permissions (-u root) to grant it the necessary control over the Docker daemon.
+- **Challenge:** The Docker-in-Docker Problem (docker: not found)
+- **Cause:** The first hurdle was that the Jenkins container itself was isolated from the main Docker engine on the Codespace host. It had no permission to issue docker commands.
+- **Solution:** The Jenkins container was re-created with a bind-mount to the host's Docker socket (-v /var/run/docker.sock:/var/run/docker.sock) and elevated permissions (-u root) to grant it the necessary control over the Docker daemon.
 
 This step required stopping and removing the old container and starting a new one with the correct command, a process that was repeated multiple times due to persistent and baffling failures.
 
-- **Challenge: Missing Build Tools & Incorrect Environment
-- **Cause: Once Jenkins could control Docker, builds failed because the execution environment didn’t have the required Node.js version. The pipeline was also using Windows-specific commands (bat) in a Linux environment.
-- **Solution: The pipeline was upgraded to use a modern Docker Agent (agent { docker { image 'node:20-alpine' } }), ensuring a clean, reproducible build environment with Node.js pre-installed. The Jenkinsfile was also corrected to use Linux shell commands (sh). This required installing the Docker Pipeline plugin.
-- **Challenge: Workspace & File Path Issues
-- **Cause: Early builds failed because the npm install step couldn’t find the package.json file. Later, the workspace became corrupted, causing fatal: not in a git directory errors.
-- **Solution: A debug stage using sh 'pwd' and sh 'ls -la' was temporarily added to verify the directory structure. The permanent solution was to add a cleanWs() step to the beginning of the pipeline, ensuring a pristine workspace for every build.
-- **Challenge: Authentication & Permissions
-- **Cause: The pipeline failed to push to Docker Hub due to unauthorized errors. The GitHub webhook also failed with a 401 error.
-- **Solution: Jenkins credentials were created for both Docker Hub and GitHub using secure Access Tokens. For the webhook, the Jenkins port visibility in GitHub Codespaces was changed from 'Private' to 'Public'.
-- **Challenge: Incorrect Image Tagging
-- **Cause: The docker push command failed because the image name did not follow the required <username>/<repository> format for Docker Hub.
-- **Solution: An environment block was added to the Jenkinsfile to define a correctly formatted IMAGE_NAME variable, which was then used consistently in both the docker build and docker push steps.
+- **Challenge:** Missing Build Tools & Incorrect Environment
+- **Cause:** Once Jenkins could control Docker, builds failed because the execution environment didn’t have the required Node.js version. The pipeline was also using Windows-specific commands (bat) in a Linux environment.
+- **Solution:** The pipeline was upgraded to use a modern Docker Agent (agent { docker { image 'node:20-alpine' } }), ensuring a clean, reproducible build environment with Node.js pre-installed. The Jenkinsfile was also corrected to use Linux shell commands (sh). This required installing the Docker Pipeline plugin.
+- **Challenge:** Workspace & File Path Issues
+- **Cause:** Early builds failed because the npm install step couldn’t find the package.json file. Later, the workspace became corrupted, causing fatal: not in a git directory errors.
+- **Solution:** A debug stage using sh 'pwd' and sh 'ls -la' was temporarily added to verify the directory structure. The permanent solution was to add a cleanWs() step to the beginning of the pipeline, ensuring a pristine workspace for every build.
+- **Challenge:** Authentication & Permissions
+- **Cause:** The pipeline failed to push to Docker Hub due to unauthorized errors. The GitHub webhook also failed with a 401 error.
+- **Solution:** Jenkins credentials were created for both Docker Hub and GitHub using secure Access Tokens. For the webhook, the Jenkins port visibility in GitHub Codespaces was changed from 'Private' to 'Public'.
+- **Challenge:** Incorrect Image Tagging
+- **Cause:** The docker push command failed because the image name did not follow the required <username>/<repository> format for Docker Hub.
+- **Solution:** An environment block was added to the Jenkinsfile to define a correctly formatted IMAGE_NAME variable, which was then used consistently in both the docker build and docker push steps.
 
 ### Phase 3: Final Deployment
 
