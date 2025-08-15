@@ -47,7 +47,7 @@ This pivot was immediately successful. A new codespace was created, and within m
 
 The relief was short-lived, as a new, more complex set of challenges emerged. The goal was to run Jenkins inside a Docker container, which would then be used to build other Docker containers—a classic "Docker-in-Docker" scenario.
 
-- **Initial Setup:** Jenkins was started in a Docker container using a persistent volume (`-v jenkins_home...`) to save its data.  
+- Initial Setup: Jenkins was started in a Docker container using a persistent volume (`-v jenkins_home...`) to save its data.  
 - **Plugin Configuration:** The Docker Pipeline plugin was correctly identified as a necessary component to allow Jenkins to understand `agent { docker { ... } }` syntax in the Jenkinsfile.  
 - **The `docker: not found` Error:** The pipeline repeatedly failed, with the Jenkins container reporting that the `docker` command itself did not exist. This was the central challenge of this phase.  
 
