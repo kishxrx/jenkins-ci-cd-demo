@@ -87,5 +87,5 @@ The journey so far has been a testament to the reality of DevOps work: it is oft
 Click the badge below to see the final product of the CI/CD pipeline in action.
 [https://my-jenkins-ci-cd-demo.onrender.com/]
 
->>##*Note: 
+>##*Note: 
 To prevent the free-tier service from sleeping due to inactivity, an external uptime monitor pings this URL every 5 minutes to ensure it remains active and responsive.*
